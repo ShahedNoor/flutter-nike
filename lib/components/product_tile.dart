@@ -1,13 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
-import '../models/shoe.dart';
+import '../models/products_model.dart';
 
-class ShoeTile extends StatelessWidget {
-  final Shoe shoe;
+class ProductTile extends StatelessWidget {
+  final ProductsModel productsModel;
+  final void Function()? onTap;
 
-  const ShoeTile({super.key, required this.shoe});
+  const ProductTile(
+      {super.key, required this.productsModel, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +36,7 @@ class ShoeTile extends StatelessWidget {
             ),
             child: ClipRRect(
               child: Image.asset(
-                shoe.imagePath,
+                productsModel.imagePath,
                 fit: BoxFit.fill,
               ),
             ),
@@ -47,7 +48,7 @@ class ShoeTile extends StatelessWidget {
               horizontal: 24.0,
             ),
             child: Text(
-              shoe.name,
+              productsModel.name,
               style: const TextStyle(
                 fontSize: 30,
                 fontWeight: FontWeight.bold,
@@ -63,7 +64,7 @@ class ShoeTile extends StatelessWidget {
             ),
             child: Row(
               children: [
-                Text(shoe.description),
+                Text(productsModel.description),
               ],
             ),
           ),
@@ -77,27 +78,30 @@ class ShoeTile extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  '\$${shoe.price}',
+                  '\$${productsModel.price}',
                   style: TextStyle(
                     color: Theme.of(context).colorScheme.primary,
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                Container(
-                  height: 45,
-                  width: 45,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(12.0),
-                    border: Border.all(
-                      width: 2,
-                      color: Theme.of(context).colorScheme.secondary,
+                GestureDetector(
+                  onTap: onTap,
+                  child: Container(
+                    height: 45,
+                    width: 45,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(12.0),
+                      border: Border.all(
+                        width: 2,
+                        color: Theme.of(context).colorScheme.secondary,
+                      ),
                     ),
-                  ),
-                  child: Center(
-                    child: Icon(
-                      Icons.add,
-                      color: Theme.of(context).colorScheme.primary,
+                    child: Center(
+                      child: Icon(
+                        Icons.add,
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
                     ),
                   ),
                 )

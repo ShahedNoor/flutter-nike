@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:nike/components/my_nav_bar.dart';
 import 'package:nike/pages/cart_page.dart';
 import 'package:nike/pages/settings_page.dart';
