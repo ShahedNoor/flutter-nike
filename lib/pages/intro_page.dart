@@ -72,11 +72,11 @@ class IntroPage extends StatelessWidget {
                       color: Theme.of(context).colorScheme.onBackground,
                       borderRadius: BorderRadius.circular(12.0),
                     ),
-                    child: const Center(
+                    child: Center(
                       child: Text(
                         'Shop Now',
                         style: TextStyle(
-                          color: Colors.white,
+                          color: Theme.of(context).colorScheme.background,
                         ),
                       ),
                     ),
