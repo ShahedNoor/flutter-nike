@@ -1,5 +1,3 @@
-import 'dart:js';
-
 import 'package:flutter/material.dart';
 import 'package:nike/components/cart_item.dart';
 import 'package:nike/data/products.dart';
