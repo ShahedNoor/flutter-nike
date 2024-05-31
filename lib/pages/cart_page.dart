@@ -9,6 +9,47 @@ class CartPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    void showMessage() {
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          content: SizedBox(
+            height: 85,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const SizedBox(
+                  height: 2,
+                ),
+                const Text(
+                    'User wants to pay! Connect this app to you backend'),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    const SizedBox(
+                      width: 10,
+                    ),
+                    MaterialButton(
+                      color: Theme.of(context).colorScheme.secondary,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(
+                          5.0,
+                        ),
+                      ),
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      child: const Text('Ok'),
+                    ),
+                  ],
+                )
+              ],
+            ),
+          ),
+        ),
+      );
+    }
+
     return Consumer<Products>(
       builder: (context, value, child) {
         var cartItems = value.getUserCart();
@@ -63,7 +104,7 @@ class CartPage extends StatelessWidget {
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12.0),
                       ),
-                      onPressed: () {},
+                      onPressed: showMessage,
                       child: Text(
                         'Pay Now',
                         style: TextStyle(
@@ -72,7 +113,7 @@ class CartPage extends StatelessWidget {
                       ),
                     ),
                   ),
-                )
+                ),
             ],
           ),
         );
