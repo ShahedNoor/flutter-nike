@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:nike/data/products.dart';
-import 'package:nike/pages/home_page.dart';
 import 'package:nike/pages/intro_page.dart';
 import 'package:nike/theme/theme.dart';
 import 'package:nike/theme/theme_provider.dart';
@@ -27,7 +26,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: Provider.of<ThemeProvider>(context).themeData,
       darkTheme: darkMode,
-      home: const HomePage(),
+      home: const IntroPage(),
     );
   }
 }

@@ -15,12 +15,52 @@ class ShopPage extends StatefulWidget {
 class _ShopPageState extends State<ShopPage> {
   // Add products to cart
   void addProductsToCart(ProductsModel products) {
-    Provider.of<Products>(context, listen: false).addItemToCart(products);
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text(
-            'Item added sucessfully to your cart!\nPlease check Your Cart.'),
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        content: SizedBox(
+          height: 85,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const SizedBox(
+                height: 2,
+              ),
+              const Text('Do you want to add this item to your cart?'),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  MaterialButton(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(
+                        5.0,
+                      ),
+                    ),
+                    onPressed: () => Navigator.pop(context),
+                    child: const Text('Cancel'),
+                  ),
+                  const SizedBox(
+                    width: 10,
+                  ),
+                  MaterialButton(
+                    color: Theme.of(context).colorScheme.secondary,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(
+                        5.0,
+                      ),
+                    ),
+                    onPressed: () {
+                      Provider.of<Products>(context, listen: false)
+                          .addItemToCart(products);
+                      Navigator.pop(context);
+                    },
+                    child: const Text('Ok'),
+                  ),
+                ],
+              )
+            ],
+          ),
+        ),
       ),
     );
   }

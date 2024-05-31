@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:nike/components/my_nav_bar.dart';
+import 'package:nike/pages/about_page.dart';
 import 'package:nike/pages/cart_page.dart';
+import 'package:nike/pages/intro_page.dart';
 import 'package:nike/pages/settings_page.dart';
 import 'package:nike/pages/shop_page.dart';
 
@@ -35,6 +37,7 @@ class _HomePageState extends State<HomePage> {
       backgroundColor: Theme.of(context).colorScheme.background,
       bottomNavigationBar: MyNavBar(
         onTabChange: (index) => bottomBarNavigation(index),
+        selectedIndex: _selectedIndex,
       ),
       appBar: AppBar(
         backgroundColor: Colors.transparent,
@@ -62,6 +65,10 @@ class _HomePageState extends State<HomePage> {
                   Padding(
                     padding: const EdgeInsets.only(left: 25.0),
                     child: ListTile(
+                      onTap: () {
+                        Navigator.pop(context);
+                        bottomBarNavigation(0);
+                      },
                       leading: Icon(
                         Icons.home,
                         color: Theme.of(context).colorScheme.primary,
@@ -77,6 +84,10 @@ class _HomePageState extends State<HomePage> {
                   Padding(
                     padding: const EdgeInsets.only(left: 25.0),
                     child: ListTile(
+                      onTap: () {
+                        Navigator.pop(context);
+                        bottomBarNavigation(1);
+                      },
                       leading: Icon(
                         Icons.shopping_cart,
                         color: Theme.of(context).colorScheme.primary,
@@ -116,6 +127,15 @@ class _HomePageState extends State<HomePage> {
                   Padding(
                     padding: const EdgeInsets.only(left: 25.0),
                     child: ListTile(
+                      onTap: () {
+                        Navigator.pop(context);
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const AboutPage(),
+                          ),
+                        );
+                      },
                       leading: Icon(
                         Icons.info,
                         color: Theme.of(context).colorScheme.primary,
@@ -134,6 +154,14 @@ class _HomePageState extends State<HomePage> {
             Padding(
               padding: const EdgeInsets.only(left: 25.0, bottom: 25.0),
               child: ListTile(
+                onTap: () {
+                  Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const IntroPage(),
+                      ),
+                      (route) => false);
+                },
                 leading: Icon(
                   Icons.exit_to_app,
                   color: Theme.of(context).colorScheme.primary,

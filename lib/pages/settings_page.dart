@@ -19,38 +19,43 @@ class SettingsPage extends StatelessWidget {
       ),
       body: Padding(
         padding: const EdgeInsets.all(25.0),
-        child: Column(
-          children: [
-            Container(
-              padding: const EdgeInsets.all(25.0),
-              decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.secondary,
-                borderRadius: BorderRadius.circular(12.0),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'Dark Mode',
-                    style: TextStyle(
-                      color: Theme.of(context).colorScheme.primary,
-                      fontWeight: FontWeight.bold,
+        child: Center(
+          child: Column(
+            children: [
+              Container(
+                width: MediaQuery.sizeOf(context).width >= 600
+                    ? 600
+                    : MediaQuery.sizeOf(context).width,
+                padding: const EdgeInsets.all(25.0),
+                decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.secondary,
+                  borderRadius: BorderRadius.circular(12.0),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Dark Mode',
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.primary,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                  ),
-                  CupertinoSwitch(
-                    value: Provider.of<ThemeProvider>(context).themeData ==
-                            lightMode
-                        ? false
-                        : true,
-                    onChanged: (p01) {
-                      Provider.of<ThemeProvider>(context, listen: false)
-                          .toggleTheme();
-                    },
-                  ),
-                ],
-              ),
-            )
-          ],
+                    CupertinoSwitch(
+                      value: Provider.of<ThemeProvider>(context).themeData ==
+                              lightMode
+                          ? false
+                          : true,
+                      onChanged: (p01) {
+                        Provider.of<ThemeProvider>(context, listen: false)
+                            .toggleTheme();
+                      },
+                    ),
+                  ],
+                ),
+              )
+            ],
+          ),
         ),
       ),
     );
