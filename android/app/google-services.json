@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "331719151756",
+    "project_id": "nike-eancbyt",
+    "storage_bucket": "nike-eancbyt.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:331719151756:android:64e8a854b647e1804deba9",
+        "android_client_info": {
+          "package_name": "com.example.nike"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA_be7JNX1PeOW0omA5bze-9NxSx6nB5XY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

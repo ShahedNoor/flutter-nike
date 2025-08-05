@@ -28,7 +28,7 @@ class _IntroPageState extends State<IntroPage> {
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(12.0),
                     child: Image.network(
-                      'https://gymjoy.gg/wp-content/uploads/2025/03/gymjoy-favicon.png',
+                      'https://raw.githubusercontent.com/ShahedNoor/flutter-nike/refs/heads/main/assets/images/logo/nike.png',
                       height: 140,
                       width: 140,
                     ),
@@ -38,7 +38,7 @@ class _IntroPageState extends State<IntroPage> {
 
                 // Title
                 const Text(
-                  'gymjoy',
+                  'NIKE',
                   textAlign: TextAlign.center,
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 ),
@@ -46,7 +46,7 @@ class _IntroPageState extends State<IntroPage> {
 
                 // Sub title
                 Text(
-                  'Premium gym kits and accessories to power your fitness journey',
+                    'Just Do It.',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 16,

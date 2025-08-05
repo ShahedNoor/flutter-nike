@@ -1,43 +1,77 @@
 import 'package:flutter/material.dart';
-import 'package:nike/data/products.dart';
-import 'package:nike/models/products_model.dart';
 import 'package:provider/provider.dart';
 
-class CartItem extends StatefulWidget {
-  final ProductsModel productsModel;
+import '../models/product.dart';
+import '../providers/products_provider.dart';
 
-  const CartItem({super.key, required this.productsModel, required int quantity});
+class CartItem extends StatelessWidget {
+  final Product productsModel;
+  final int quantity;
 
-  @override
-  State<CartItem> createState() => _CartItemState();
-}
-
-class _CartItemState extends State<CartItem> {
-  // Remove item from cart
-  void removeItemFromCart() {
-    Provider.of<Products>(context, listen: false)
-        .removeFromCart(widget.productsModel);
-  }
+  const CartItem({
+    super.key,
+    required this.productsModel,
+    required this.quantity,
+  });
 
   @override
   Widget build(BuildContext context) {
+    final productsProvider = Provider.of<ProductsProvider>(
+      context,
+      listen: false,
+    );
+
     return Container(
-      margin: const EdgeInsets.only(
-        bottom: 10.0,
-      ),
+      margin: const EdgeInsets.only(bottom: 10.0),
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.secondary,
-        borderRadius: BorderRadius.circular(
-          8.0,
-        ),
+        color: Theme.of(context).colorScheme.secondaryContainer,
+        borderRadius: BorderRadius.circular(8.0),
       ),
       child: ListTile(
-        leading: Image.asset(widget.productsModel.imagePath),
-        title: Text(widget.productsModel.name.toUpperCase()),
-        subtitle: Text('\$${widget.productsModel.price}'),
-        trailing: IconButton(
-          onPressed: removeItemFromCart,
-          icon: const Icon(Icons.delete),
+        leading: ClipRRect(
+          borderRadius: BorderRadius.circular(6),
+          child: Image.network(
+            productsModel.media.thumbnailImage,
+            width: 60,
+            height: 60,
+            fit: BoxFit.cover,
+          ),
+        ),
+        title: Text(
+          productsModel.name.toUpperCase(),
+          style: const TextStyle(fontWeight: FontWeight.bold),
+        ),
+        subtitle: Text(
+          'Price: \$${productsModel.pricing.basePrice.toStringAsFixed(2)}\nQuantity: $quantity',
+        ),
+        isThreeLine: true,
+        trailing: SizedBox(
+          width: 110,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              IconButton(
+                onPressed: () {
+                  productsProvider.removeFromCart(productsModel);
+                },
+                icon: const Icon(Icons.remove_circle_outline),
+              ),
+              Text('$quantity', style: const TextStyle(fontSize: 16)),
+              IconButton(
+                onPressed: () {
+                  productsProvider.addItemToCart(productsModel);
+                },
+                icon: const Icon(Icons.add_circle_outline),
+              ),
+              IconButton(
+                onPressed: () {
+                  productsProvider.removeProductCompletely(productsModel);
+                },
+                icon: const Icon(Icons.delete_forever),
+                color: Colors.redAccent,
+              ),
+            ],
+          ),
         ),
       ),
     );

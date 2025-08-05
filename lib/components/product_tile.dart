@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
 
-import '../models/products_model.dart';
+import '../models/product.dart';
 
 class ProductTile extends StatelessWidget {
-  final ProductsModel productsModel;
+  final Product productsModel;
   final void Function()? onTap;
 
-  const ProductTile(
-      {super.key, required this.productsModel, required this.onTap});
+  const ProductTile({
+    super.key,
+    required this.productsModel,
+    required this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -34,50 +37,35 @@ class ProductTile extends StatelessWidget {
               borderRadius: BorderRadius.circular(12.0),
             ),
             child: ClipRRect(
-              child: Image.asset(
-                productsModel.imagePath,
-                fit: BoxFit.fill,
+              child: Image.network(
+                productsModel.media.primaryImage,
+                fit: BoxFit.cover,
               ),
             ),
           ),
 
           // Description
           Container(
-            margin: const EdgeInsets.symmetric(
-              horizontal: 24.0,
-            ),
+            margin: const EdgeInsets.symmetric(horizontal: 24.0),
             child: Text(
               productsModel.name,
-              style: const TextStyle(
-                fontSize: 30,
-                fontWeight: FontWeight.bold,
-              ),
+              style: const TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
             ),
           ),
 
           // Price and details
           Container(
-            margin: const EdgeInsets.symmetric(
-              horizontal: 24.0,
-              vertical: 4,
-            ),
-            child: Row(
-              children: [
-                Text(productsModel.description),
-              ],
-            ),
+            margin: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 4),
+            child: Row(children: [Text(productsModel.shortDescription)]),
           ),
 
           Container(
-            margin: const EdgeInsets.symmetric(
-              horizontal: 24.0,
-              vertical: 14,
-            ),
+            margin: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 14),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  '\$${productsModel.price}',
+                  '\$${productsModel.pricing.basePrice.toStringAsFixed(2)}',
                   style: TextStyle(
                     color: Theme.of(context).colorScheme.primary,
                     fontSize: 16,
@@ -103,10 +91,10 @@ class ProductTile extends StatelessWidget {
                       ),
                     ),
                   ),
-                )
+                ),
               ],
             ),
-          )
+          ),
         ],
       ),
     );

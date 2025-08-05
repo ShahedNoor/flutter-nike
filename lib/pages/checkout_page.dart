@@ -1,8 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/products_provider.dart';
-import '../services/woocommerce_service.dart';
 import '../widgets/my_text_field.dart';
 
 class CheckoutPage extends StatefulWidget {
@@ -33,16 +33,45 @@ class _CheckoutPageState extends State<CheckoutPage> {
     super.dispose();
   }
 
+  Future<void> placeOrder(Map cart) async {
+    final ordersCollection = FirebaseFirestore.instance.collection('orders');
+
+    final orderData = {
+      'fullName': fullNameController.text.trim(),
+      'district': districtController.text.trim(),
+      'address': addressController.text.trim(),
+      'phone': phoneController.text.trim(),
+      'email': emailController.text.trim(),
+      'notes': notesController.text.trim(),
+      'paymentMethod': isCashOnDelivery ? 'Cash on Delivery' : 'Other',
+      'cart': cart.entries.map((entry) {
+        final product = entry.key;
+        final quantity = entry.value;
+        return {
+          'productId': product.id,
+          'name': product.name,
+          'price': product.pricing.basePrice,
+          'quantity': quantity,
+          'subtotal': product.pricing.basePrice * quantity,
+        };
+      }).toList(),
+      'createdAt': FieldValue.serverTimestamp(),
+      'status': 'pending',
+    };
+
+    await ordersCollection.add(orderData);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Consumer<ProductsProvider>(
       builder: (context, value, child) {
-        final cartItems =
-            Provider.of<ProductsProvider>(context, listen: false).getUserCart();
+        final cartItems = value.getUserCart();
 
-        final subtotal = cartItems.entries
-            .map((e) => double.tryParse(e.key.price)! * e.value)
-            .fold(0.0, (a, b) => a + b);
+        final subtotal = cartItems.entries.fold<double>(
+          0.0,
+          (sum, entry) => sum + (entry.key.pricing.basePrice * entry.value),
+        );
 
         final deliveryFee = 30.0;
         final total = subtotal + deliveryFee;
@@ -61,7 +90,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                 Expanded(
                   child: Center(
                     child: Text(
-                      'Oh, no. Go back to cart add product and then order!',
+                      'Oh, no. Go back to cart, add products and then order!',
                       style: TextStyle(
                         color: Theme.of(context).colorScheme.primary,
                       ),
@@ -78,12 +107,12 @@ class _CheckoutPageState extends State<CheckoutPage> {
                         const Text("Full Name *"),
                         const SizedBox(height: 4),
                         MyTextField(
-                          hintText: "Naam likh beta!",
+                          hintText: "Your full name",
                           keyboardType: TextInputType.name,
                           controller: fullNameController,
                         ),
                         const SizedBox(height: 16),
-                        const Text("District / Jhela *"),
+                        const Text("District / Area *"),
                         const SizedBox(height: 4),
                         MyTextField(
                           hintText: "Ex: Dhaka",
@@ -94,7 +123,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                         const Text("Full Address *"),
                         const SizedBox(height: 4),
                         MyTextField(
-                          hintText: "Full bashar address mar!",
+                          hintText: "Complete address",
                           keyboardType: TextInputType.streetAddress,
                           controller: addressController,
                         ),
@@ -102,7 +131,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                         const Text("Phone *"),
                         const SizedBox(height: 4),
                         MyTextField(
-                          hintText: "01696969696",
+                          hintText: "01XXXXXXXXX",
                           keyboardType: TextInputType.phone,
                           controller: phoneController,
                         ),
@@ -110,7 +139,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                         const Text("Email Address *"),
                         const SizedBox(height: 4),
                         MyTextField(
-                          hintText: "Shob diso, email o diye deo mama!",
+                          hintText: "Your email address",
                           keyboardType: TextInputType.emailAddress,
                           controller: emailController,
                         ),
@@ -118,8 +147,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                         const Text("Order notes (optional)"),
                         const SizedBox(height: 4),
                         MyTextField(
-                          hintText:
-                              "Notes about your order, e.g. special notes for delivery.",
+                          hintText: "Additional notes about your order",
                           keyboardType: TextInputType.multiline,
                           maxLines: 2,
                           controller: notesController,
@@ -165,7 +193,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                                 final product = entry.key;
                                 final quantity = entry.value;
                                 final itemTotal =
-                                    double.tryParse(product.price)! * quantity;
+                                    product.pricing.basePrice * quantity;
                                 return Padding(
                                   padding: const EdgeInsets.symmetric(
                                     vertical: 4.0,
@@ -175,7 +203,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                                         MainAxisAlignment.spaceBetween,
                                     children: [
                                       Text("${product.name} × $quantity"),
-                                      Text("${itemTotal.toStringAsFixed(0)}৳"),
+                                      Text("\$${itemTotal.toStringAsFixed(2)}"),
                                     ],
                                   ),
                                 );
@@ -186,7 +214,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                                     MainAxisAlignment.spaceBetween,
                                 children: [
                                   const Text("Subtotal"),
-                                  Text("${subtotal.toStringAsFixed(0)}৳"),
+                                  Text("\$${subtotal.toStringAsFixed(2)}"),
                                 ],
                               ),
                               Row(
@@ -195,7 +223,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                                 children: [
                                   const Text("Shipping"),
                                   Text(
-                                    "GymJoy Courier: ${deliveryFee.toStringAsFixed(0)}৳",
+                                    "Delivery Fee: \$${deliveryFee.toStringAsFixed(2)}",
                                   ),
                                 ],
                               ),
@@ -211,7 +239,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                                     ),
                                   ),
                                   Text(
-                                    "${total.toStringAsFixed(0)}৳",
+                                    "\$${total.toStringAsFixed(2)}",
                                     style: const TextStyle(
                                       fontWeight: FontWeight.bold,
                                     ),
@@ -247,8 +275,9 @@ class _CheckoutPageState extends State<CheckoutPage> {
                                       isCashOnDelivery = value ?? true;
                                     });
                                   },
-                                  activeColor:
-                                      Theme.of(context).colorScheme.primary,
+                                  activeColor: Theme.of(
+                                    context,
+                                  ).colorScheme.primary,
                                 ),
                                 const SizedBox(width: 8),
                                 Expanded(
@@ -257,10 +286,9 @@ class _CheckoutPageState extends State<CheckoutPage> {
                                     style: TextStyle(
                                       fontWeight: FontWeight.w600,
                                       fontSize: 16,
-                                      color:
-                                          Theme.of(
-                                            context,
-                                          ).colorScheme.onSurface,
+                                      color: Theme.of(
+                                        context,
+                                      ).colorScheme.onSurface,
                                     ),
                                   ),
                                 ),
@@ -303,41 +331,32 @@ class _CheckoutPageState extends State<CheckoutPage> {
                   alignment: Alignment.center,
                   child: SizedBox(
                     height: 60,
-                    width:
-                        MediaQuery.sizeOf(context).width >= 600
-                            ? 600
-                            : MediaQuery.sizeOf(context).width,
+                    width: MediaQuery.sizeOf(context).width >= 600
+                        ? 600
+                        : MediaQuery.sizeOf(context).width,
                     child: MaterialButton(
                       color: Theme.of(context).colorScheme.onSurface,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12.0),
                       ),
                       onPressed: () async {
+                        // Validation
                         if (!isCashOnDelivery) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
                               content: Text(
-                                'We only accept Cash on Delivery! Please select the Cash on Delivery option to place your order!',
+                                'We only accept Cash on Delivery! Please select Cash on Delivery.',
                               ),
                             ),
                           );
                           return;
                         }
 
-                        // Extract the user input data
-                        final fullName = fullNameController.text;
-                        final address = addressController.text;
-                        final district = districtController.text;
-                        final phone = phoneController.text;
-                        final email = emailController.text;
-                        final notes = notesController.text;
-
-                        // 1. Check if any required field is empty
-                        if (fullName.isEmpty ||
-                            address.isEmpty ||
-                            district.isEmpty ||
-                            phone.isEmpty ||
-                            email.isEmpty) {
+                        if (fullNameController.text.isEmpty ||
+                            addressController.text.isEmpty ||
+                            districtController.text.isEmpty ||
+                            phoneController.text.isEmpty ||
+                            emailController.text.isEmpty) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
                               content: Text(
@@ -348,73 +367,63 @@ class _CheckoutPageState extends State<CheckoutPage> {
                           return;
                         }
 
-                        // 2. Then check phone number validity
-                        if (phone.length != 11 || !phone.startsWith('01')) {
+                        if (phoneController.text.length != 11 ||
+                            !phoneController.text.startsWith('01')) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
                               content: Text(
-                                'Phone number should be 11 digits and must start with 01',
+                                'Phone number should be 11 digits and start with 01',
                               ),
                             ),
                           );
                           return;
                         }
 
-                        // Get cart items
-                        final cart =
-                            Provider.of<ProductsProvider>(
-                              context,
-                              listen: false,
-                            ).getUserCart();
+                        try {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('Placing your order...'),
+                            ),
+                          );
 
-                        // Show loading indicator
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('Placing your order...'),
-                          ),
-                        );
+                          await placeOrder(cartItems);
 
-                        // Call the WooCommerceService to create an order
-                        final wooCommerceService = WooCommerceService();
-                        final isOrderPlaced = await wooCommerceService
-                            .createOrder(
-                              cart: cart,
-                              fullName: fullName,
-                              address: address,
-                              district: district,
-                              phone: phone,
-                              email: email,
-                              notes: notes,
-                            );
-
-                        // Show success or failure message
-                        if (isOrderPlaced) {
                           if (context.mounted) {
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
                                 content: Text('Order placed successfully!'),
                               ),
                             );
-                          }
-                          if (context.mounted) {
-                            Provider.of<ProductsProvider>(
+
+                            // Clear cart after order
+                            final provider = Provider.of<ProductsProvider>(
                               context,
                               listen: false,
-                            ).userCart.clear();
+                            );
+                            // Remove all products from cart
+                            final products = cartItems.keys.toList();
+                            for (var product in products) {
+                              provider.removeProductCompletely(product);
+                            }
+
+                            // Clear form
+                            fullNameController.clear();
+                            districtController.clear();
+                            addressController.clear();
+                            phoneController.clear();
+                            emailController.clear();
+                            notesController.clear();
                           }
-                        } else {
+                        } catch (e) {
                           if (context.mounted) {
                             ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text(
-                                  'Failed to place the order. Please try again.',
-                                ),
+                              SnackBar(
+                                content: Text('Failed to place order: $e'),
                               ),
                             );
                           }
                         }
                       },
-
                       child: Text(
                         'Place Order',
                         style: TextStyle(

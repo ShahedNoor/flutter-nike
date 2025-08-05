@@ -1,4 +1,6 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:nike/firebase_options.dart';
 import 'package:provider/provider.dart';
 
 import 'providers/products_provider.dart';
@@ -6,12 +8,16 @@ import 'theme/theme.dart';
 import 'theme/theme_provider.dart';
 import 'widgets/intro_decider.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   runApp(
     MultiProvider(
       providers: [
         ChangeNotifierProvider<ThemeProvider>(create: (_) => ThemeProvider()),
-        ChangeNotifierProvider<ProductsProvider>(create: (_) => ProductsProvider()),
+        ChangeNotifierProvider<ProductsProvider>(
+          create: (_) => ProductsProvider(),
+        ),
       ],
       child: const MyApp(),
     ),

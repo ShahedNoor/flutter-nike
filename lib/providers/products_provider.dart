@@ -1,60 +1,47 @@
 import 'package:flutter/material.dart';
-
-import '../models/products_model.dart';
-import '../services/woocommerce_service.dart';
+import '../models/product.dart';
 
 class ProductsProvider extends ChangeNotifier {
-  List<ProductsModel> products = [];
-  final Map<ProductsModel, int> userCart = {};
-  final WooCommerceService _service = WooCommerceService();
+  final List<Product> _products = [];
+  final Map<Product, int> _userCart = {};
 
-  bool _isLoading = false;
-  bool get isLoading => _isLoading;
+  // This method must exist and be public
+  Map<Product, int> getUserCart() => userCart;
 
-  Future<void> fetchProductsFromAPI() async {
-    _isLoading = true;
-    notifyListeners();
+  // Expose cart items
+  Map<Product, int> get userCart => _userCart;
 
-    try {
-      products = await _service.fetchProducts();
-    } catch (e) {
-      debugPrint("Error fetching products: $e");
-    }
-
-    _isLoading = false;
-    notifyListeners();
-  }
-
-  List<ProductsModel> getProductList() => products;
-
-  Map<ProductsModel, int> getUserCart() => userCart;
-
-  void addItemToCart(ProductsModel product) {
-    if (userCart.containsKey(product)) {
-      userCart[product] = userCart[product]! + 1;
-    } else {
-      userCart[product] = 1;
-    }
-    notifyListeners();
-  }
-
-  void removeFromCart(ProductsModel product) {
-    if (!userCart.containsKey(product)) return;
-
-    if (userCart[product]! > 1) {
-      userCart[product] = userCart[product]! - 1;
-    } else {
-      userCart.remove(product);
-    }
-    notifyListeners();
-  }
-
-  void removeProductCompletely(ProductsModel product) {
-    userCart.remove(product);
-    notifyListeners();
-  }
-
+  // Expose cart item count
   int get totalCartItems {
-    return userCart.values.fold(0, (sum, qty) => sum + qty);
+    return _userCart.values.fold(0, (sum, qty) => sum + qty);
   }
+
+  // Cart operations
+  void addItemToCart(Product product) {
+    if (_userCart.containsKey(product)) {
+      _userCart[product] = _userCart[product]! + 1;
+    } else {
+      _userCart[product] = 1;
+    }
+    notifyListeners();
+  }
+
+  void removeFromCart(Product product) {
+    if (!_userCart.containsKey(product)) return;
+
+    if (_userCart[product]! > 1) {
+      _userCart[product] = _userCart[product]! - 1;
+    } else {
+      _userCart.remove(product);
+    }
+    notifyListeners();
+  }
+
+  void removeProductCompletely(Product product) {
+    _userCart.remove(product);
+    notifyListeners();
+  }
+
+  // Optional (in case you want to use static product list for other pages)
+  List<Product> get productList => _products;
 }

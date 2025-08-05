@@ -11,20 +11,21 @@ class CartPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Consumer<ProductsProvider>(
-      builder: (context, value, child) {
-        final cartItems =
-            Provider.of<ProductsProvider>(context, listen: false).getUserCart();
+      builder: (context, productsProvider, child) {
+        final cartItems = productsProvider.userCart;
 
         return Padding(
           padding: const EdgeInsets.symmetric(horizontal: 25.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              const SizedBox(height: 20),
               const Text(
                 'My Cart',
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
               ),
               const SizedBox(height: 10),
+
               if (cartItems.isEmpty)
                 Expanded(
                   child: Center(
@@ -32,6 +33,7 @@ class CartPage extends StatelessWidget {
                       'Oh, no. Your cart is empty!',
                       style: TextStyle(
                         color: Theme.of(context).colorScheme.primary,
+                        fontSize: 16,
                       ),
                     ),
                   ),
@@ -49,40 +51,42 @@ class CartPage extends StatelessWidget {
                     },
                   ),
                 ),
+
               if (cartItems.isNotEmpty)
                 Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
+                    const SizedBox(height: 10),
                     Text(
-                      'Total: ৳${cartItems.entries.map((entry) => double.tryParse(entry.key.price)! * entry.value).reduce((a, b) => a + b).toStringAsFixed(2)}',
+                      'Total: \$${cartItems.entries.fold<double>(0, (sum, entry) => sum + (entry.key.pricing.basePrice * entry.value)).toStringAsFixed(2)}',
                       style: const TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
                       ),
+                      textAlign: TextAlign.right,
                     ),
-                    SizedBox(height: 10),
-                    Align(
-                      alignment: Alignment.center,
-                      child: SizedBox(
-                        height: 60,
-                        width:
-                            MediaQuery.sizeOf(context).width >= 600
-                                ? 600
-                                : MediaQuery.sizeOf(context).width,
-                        child: MaterialButton(
-                          color: Theme.of(context).colorScheme.onSurface,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12.0),
-                          ),
-                          onPressed: onPayNow,
-                          child: Text(
-                            'Pay Now',
-                            style: TextStyle(
-                              color: Theme.of(context).colorScheme.secondary,
-                            ),
+                    const SizedBox(height: 10),
+                    SizedBox(
+                      height: 60,
+                      width: MediaQuery.of(context).size.width >= 600
+                          ? 600
+                          : MediaQuery.of(context).size.width,
+                      child: MaterialButton(
+                        color: Theme.of(context).colorScheme.primary,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12.0),
+                        ),
+                        onPressed: onPayNow,
+                        child: Text(
+                          'Pay Now',
+                          style: TextStyle(
+                            color: Theme.of(context).colorScheme.onPrimary,
+                            fontSize: 18,
                           ),
                         ),
                       ),
                     ),
+                    const SizedBox(height: 20),
                   ],
                 ),
             ],
