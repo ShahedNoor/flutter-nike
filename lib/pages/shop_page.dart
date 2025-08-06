@@ -26,7 +26,7 @@ class ShopPage extends StatelessWidget {
               ),
               child: Center(
                 child: Text(
-                  'Welcome to NIKE\nWe are delivering all over the world at \$30 only!',
+                  'Free Delivery\nFree standard delivery for members on orders \$80+',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     color: Theme.of(context).colorScheme.primary,
@@ -77,7 +77,7 @@ class ShopPage extends StatelessWidget {
               child: StreamBuilder<QuerySnapshot>(
                 stream: FirebaseFirestore.instance
                     .collection('products')
-                    .orderBy('timestamps.createdAt', descending: true)
+                    .orderBy('timestamps.createdAt', descending: false)
                     .snapshots(),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
@@ -89,7 +89,7 @@ class ShopPage extends StatelessWidget {
                   }
 
                   if (snapshot.hasError) {
-                    return Center(child: Text('❌ Error: ${snapshot.error}'));
+                    return Center(child: Text('Error: ${snapshot.error}'));
                   }
 
                   final productsDocs = snapshot.data?.docs ?? [];

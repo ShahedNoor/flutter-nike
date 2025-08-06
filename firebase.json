@@ -1,1 +1,39 @@
-{"flutter":{"platforms":{"android":{"default":{"projectId":"nike-eancbyt","appId":"1:331719151756:android:64e8a854b647e1804deba9","fileOutput":"android/app/google-services.json"}},"dart":{"lib/firebase_options.dart":{"projectId":"nike-eancbyt","configurations":{"android":"1:331719151756:android:64e8a854b647e1804deba9","ios":"1:331719151756:ios:0bc237b1f96e18b34deba9","macos":"1:331719151756:ios:0bc237b1f96e18b34deba9","web":"1:331719151756:web:c932e1f57fb4a8294deba9","windows":"1:331719151756:web:4f015efee70db6fe4deba9"}}}}}}
+{
+  "flutter": {
+    "platforms": {
+      "android": {
+        "default": {
+          "projectId": "nike-eancbyt",
+          "appId": "1:331719151756:android:64e8a854b647e1804deba9",
+          "fileOutput": "android/app/google-services.json"
+        }
+      },
+      "dart": {
+        "lib/firebase_options.dart": {
+          "projectId": "nike-eancbyt",
+          "configurations": {
+            "android": "1:331719151756:android:64e8a854b647e1804deba9",
+            "ios": "1:331719151756:ios:0bc237b1f96e18b34deba9",
+            "macos": "1:331719151756:ios:0bc237b1f96e18b34deba9",
+            "web": "1:331719151756:web:c932e1f57fb4a8294deba9",
+            "windows": "1:331719151756:web:4f015efee70db6fe4deba9"
+          }
+        }
+      }
+    }
+  },
+  "hosting": {
+    "public": "build/web",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "rewrites": [
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
+    ]
+  }
+}

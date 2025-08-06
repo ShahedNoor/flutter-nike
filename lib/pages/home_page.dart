@@ -7,6 +7,7 @@ import 'cart_page.dart';
 import 'checkout_page.dart';
 import 'settings_page.dart';
 import 'shop_page.dart';
+import 'show_user_menu_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -39,12 +40,22 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.surface,
-      bottomNavigationBar: MyNavBar(
-        onTabChange: (index) => bottomBarNavigation(index),
-        selectedIndex: _selectedIndex,
-      ),
       appBar: AppBar(
+        leading: Padding(
+          padding: const EdgeInsets.all(12.0),
+          child: Image.network(
+            'https://raw.githubusercontent.com/ShahedNoor/flutter-nike/refs/heads/main/assets/images/logo/nike.png',
+            errorBuilder: (context, error, stackTrace) {
+              return IconButton(
+                icon: const Icon(Icons.menu),
+                onPressed: () => ShowUserMenuPage.show(
+                  context,
+                  bottomBarNavigation,
+                ),
+              );
+            },
+          ),
+        ),
         title: Text(
           'NIKE',
           style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
@@ -53,138 +64,38 @@ class _HomePageState extends State<HomePage> {
         backgroundColor: Colors.transparent,
         elevation: 0,
         iconTheme: IconThemeData(color: Theme.of(context).colorScheme.primary),
-      ),
-      drawer: Drawer(
-        backgroundColor: Theme.of(context).colorScheme.surface,
-        child: Column(
-          children: [
-            // Logo
-            DrawerHeader(
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(12.0),
-                child: Image.network(
-                  height: 80,
-                  width: 80,
-                  'https://gymjoy.gg/wp-content/uploads/2025/03/gymjoy-favicon.png',
+        actions: [
+          IconButton(
+            icon: Icon(
+              Icons.notifications_outlined,
+              color: Theme.of(context).colorScheme.primary,
+            ),
+            onPressed: () {
+              // Handle notification action
+            },
+          ),
+          Padding(
+            padding: const EdgeInsets.only(right: 12.0),
+            child: GestureDetector(
+              onTap: () => ShowUserMenuPage.show(
+                context,
+                bottomBarNavigation,
+              ),
+              child: const CircleAvatar(
+                backgroundImage: NetworkImage(
+                  'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
                 ),
+                radius: 16,
               ),
             ),
-
-            // Navigation button
-            Expanded(
-              child: Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(left: 25.0),
-                    child: ListTile(
-                      onTap: () {
-                        Navigator.pop(context);
-                        bottomBarNavigation(0);
-                      },
-                      leading: Icon(
-                        Icons.home,
-                        color: Theme.of(context).colorScheme.primary,
-                      ),
-                      title: Text(
-                        'shop'.toUpperCase(),
-                        style: TextStyle(
-                          color: Theme.of(context).colorScheme.primary,
-                        ),
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 25.0),
-                    child: ListTile(
-                      onTap: () {
-                        Navigator.pop(context);
-                        bottomBarNavigation(1);
-                      },
-                      leading: Icon(
-                        Icons.shopping_cart,
-                        color: Theme.of(context).colorScheme.primary,
-                      ),
-                      title: Text(
-                        'cart'.toUpperCase(),
-                        style: TextStyle(
-                          color: Theme.of(context).colorScheme.primary,
-                        ),
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 25.0),
-                    child: ListTile(
-                      onTap: () {
-                        Navigator.pop(context);
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const SettingsPage(),
-                          ),
-                        );
-                      },
-                      leading: Icon(
-                        Icons.settings,
-                        color: Theme.of(context).colorScheme.primary,
-                      ),
-                      title: Text(
-                        'settings'.toUpperCase(),
-                        style: TextStyle(
-                          color: Theme.of(context).colorScheme.primary,
-                        ),
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 25.0),
-                    child: ListTile(
-                      onTap: () {
-                        Navigator.pop(context);
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const AboutPage(),
-                          ),
-                        );
-                      },
-                      leading: Icon(
-                        Icons.info,
-                        color: Theme.of(context).colorScheme.primary,
-                      ),
-                      title: Text(
-                        'about'.toUpperCase(),
-                        style: TextStyle(
-                          color: Theme.of(context).colorScheme.primary,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(left: 25.0, bottom: 25.0),
-              child: ListTile(
-                onTap: () {
-                  SystemNavigator.pop(); // This will exit the app
-                },
-                leading: Icon(
-                  Icons.exit_to_app,
-                  color: Theme.of(context).colorScheme.primary,
-                ),
-                title: Text(
-                  'exit'.toUpperCase(),
-                  style: TextStyle(
-                    color: Theme.of(context).colorScheme.primary,
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
       body: _pages[_selectedIndex],
+      bottomNavigationBar: MyNavBar(
+        onTabChange: (index) => bottomBarNavigation(index),
+        selectedIndex: _selectedIndex,
+      ),
     );
   }
 }
