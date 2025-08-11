@@ -24,7 +24,7 @@ class CartItem extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.only(bottom: 10.0),
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.secondaryContainer,
+        color: Theme.of(context).colorScheme.onSecondary,
         borderRadius: BorderRadius.circular(8.0),
       ),
       child: ListTile(
@@ -41,37 +41,79 @@ class CartItem extends StatelessWidget {
           productsModel.name.toUpperCase(),
           style: const TextStyle(fontWeight: FontWeight.bold),
         ),
-        subtitle: Text(
-          'Price: \$${productsModel.pricing.basePrice.toStringAsFixed(2)}\nQuantity: $quantity',
+        subtitle: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('\$${productsModel.pricing.basePrice.toStringAsFixed(2)}'),
+
+            SizedBox(height: 10),
+
+            Row(
+              children: [
+                // Decrease quantity
+                GestureDetector(
+                  onTap: () {
+                    productsProvider.removeProductCompletely(productsModel);
+                  },
+                  child: Container(
+                    height: 30,
+                    width: 30,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8.0),
+                      border: Border.all(
+                        width: 2,
+                        color: Theme.of(context).colorScheme.secondary,
+                      ),
+                    ),
+                    child: Center(
+                      child: Icon(
+                        Icons.remove,
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
+                    ),
+                  ),
+                ),
+
+                SizedBox(width: 10),
+
+                // Quantity text
+                Text('$quantity', style: const TextStyle(fontSize: 16)),
+
+                SizedBox(width: 10),
+
+                // Increase quantity
+                GestureDetector(
+                  onTap: () {
+                    productsProvider.addItemToCart(productsModel);
+                  },
+                  child: Container(
+                    height: 30,
+                    width: 30,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8.0),
+                      border: Border.all(
+                        width: 2,
+                        color: Theme.of(context).colorScheme.secondary,
+                      ),
+                    ),
+                    child: Center(
+                      child: Icon(
+                        Icons.add,
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
         ),
-        isThreeLine: true,
-        trailing: SizedBox(
-          width: 110,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              IconButton(
-                onPressed: () {
-                  productsProvider.removeFromCart(productsModel);
-                },
-                icon: const Icon(Icons.remove_circle_outline),
-              ),
-              Text('$quantity', style: const TextStyle(fontSize: 16)),
-              IconButton(
-                onPressed: () {
-                  productsProvider.addItemToCart(productsModel);
-                },
-                icon: const Icon(Icons.add_circle_outline),
-              ),
-              IconButton(
-                onPressed: () {
-                  productsProvider.removeProductCompletely(productsModel);
-                },
-                icon: const Icon(Icons.delete_forever),
-                color: Colors.redAccent,
-              ),
-            ],
-          ),
+        trailing: IconButton(
+          onPressed: () {
+            productsProvider.removeProductCompletely(productsModel);
+          },
+          icon: const Icon(Icons.delete),
+          color: Theme.of(context).colorScheme.onSurface,
         ),
       ),
     );

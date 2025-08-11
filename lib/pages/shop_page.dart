@@ -26,7 +26,7 @@ class ShopPage extends StatelessWidget {
               ),
               child: Center(
                 child: Text(
-                  'Free Delivery\nFree standard delivery for members on orders \$80+',
+                  'Free standard delivery for members on orders \$80+',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     color: Theme.of(context).colorScheme.primary,

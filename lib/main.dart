@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:nike/firebase_options.dart';
 import 'package:provider/provider.dart';
 
+import 'components/navigation_provider.dart';
 import 'providers/products_provider.dart';
 import 'theme/theme.dart';
 import 'theme/theme_provider.dart';
@@ -17,6 +18,9 @@ void main() async {
         ChangeNotifierProvider<ThemeProvider>(create: (_) => ThemeProvider()),
         ChangeNotifierProvider<ProductsProvider>(
           create: (_) => ProductsProvider(),
+        ),
+        ChangeNotifierProvider<NavigationProvider>(
+          create: (_) => NavigationProvider(),
         ),
       ],
       child: const MyApp(),

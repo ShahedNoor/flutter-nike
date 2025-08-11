@@ -19,13 +19,6 @@ class CartPage extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const SizedBox(height: 20),
-              const Text(
-                'My Cart',
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
-              ),
-              const SizedBox(height: 10),
-
               if (cartItems.isEmpty)
                 Expanded(
                   child: Center(
@@ -72,7 +65,7 @@ class CartPage extends StatelessWidget {
                           ? 600
                           : MediaQuery.of(context).size.width,
                       child: MaterialButton(
-                        color: Theme.of(context).colorScheme.primary,
+                        color: Theme.of(context).colorScheme.onSurface,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12.0),
                         ),
@@ -80,7 +73,7 @@ class CartPage extends StatelessWidget {
                         child: Text(
                           'Pay Now',
                           style: TextStyle(
-                            color: Theme.of(context).colorScheme.onPrimary,
+                            color: Theme.of(context).colorScheme.onSecondary,
                             fontSize: 18,
                           ),
                         ),

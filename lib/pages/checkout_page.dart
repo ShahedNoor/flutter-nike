@@ -81,11 +81,6 @@ class _CheckoutPageState extends State<CheckoutPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
-                'Checkout',
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
-              ),
-              const SizedBox(height: 10),
               if (cartItems.isEmpty)
                 Expanded(
                   child: Center(

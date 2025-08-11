@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 
 import '../components/my_nav_bar.dart';
-import 'about_page.dart';
+import '../components/navigation_provider.dart';
 import 'cart_page.dart';
 import 'checkout_page.dart';
-import 'settings_page.dart';
 import 'shop_page.dart';
 import 'show_user_menu_page.dart';
 
@@ -17,14 +16,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  int _selectedIndex = 0;
-
-  void bottomBarNavigation(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-  }
-
   late List<Widget> _pages;
 
   @override
@@ -32,13 +23,15 @@ class _HomePageState extends State<HomePage> {
     super.initState();
     _pages = [
       const ShopPage(),
-      CartPage(onPayNow: () => bottomBarNavigation(2)),
+      CartPage(onPayNow: () => context.read<NavigationProvider>().setIndex(2)),
       const CheckoutPage(),
     ];
   }
 
   @override
   Widget build(BuildContext context) {
+    final navProvider = context.watch<NavigationProvider>();
+
     return Scaffold(
       appBar: AppBar(
         leading: Padding(
@@ -50,14 +43,14 @@ class _HomePageState extends State<HomePage> {
                 icon: const Icon(Icons.menu),
                 onPressed: () => ShowUserMenuPage.show(
                   context,
-                  bottomBarNavigation,
+                  (index) => navProvider.setIndex(index),
                 ),
               );
             },
           ),
         ),
         title: Text(
-          'NIKE',
+          navProvider.currentTitle,
           style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
         ),
         centerTitle: true,
@@ -70,20 +63,18 @@ class _HomePageState extends State<HomePage> {
               Icons.notifications_outlined,
               color: Theme.of(context).colorScheme.primary,
             ),
-            onPressed: () {
-              // Handle notification action
-            },
+            onPressed: () {},
           ),
           Padding(
             padding: const EdgeInsets.only(right: 12.0),
             child: GestureDetector(
               onTap: () => ShowUserMenuPage.show(
                 context,
-                bottomBarNavigation,
+                (index) => navProvider.setIndex(index),
               ),
               child: const CircleAvatar(
                 backgroundImage: NetworkImage(
-                  'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+                  'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=1170&auto=format&fit=crop',
                 ),
                 radius: 16,
               ),
@@ -91,10 +82,10 @@ class _HomePageState extends State<HomePage> {
           ),
         ],
       ),
-      body: _pages[_selectedIndex],
+      body: _pages[navProvider.selectedIndex],
       bottomNavigationBar: MyNavBar(
-        onTabChange: (index) => bottomBarNavigation(index),
-        selectedIndex: _selectedIndex,
+        onTabChange: (index) => navProvider.setIndex(index),
+        selectedIndex: navProvider.selectedIndex,
       ),
     );
   }
